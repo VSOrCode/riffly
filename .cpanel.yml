@@ -1,0 +1,21 @@
+---
+# HostGator / cPanel "Git Version Control" deploy script.
+# Runs automatically when you click "Update from Remote" then "Deploy HEAD Commit"
+# in cPanel, or on push if you configure a deploy hook.
+#
+# It copies the contents of public/ into public_html/.
+#
+# >>> EDIT the DEPLOYPATH below: replace  cpaneluser  with your real cPanel
+#     username. You can see it in cPanel top-right, or in the path shown on the
+#     Git Version Control page (e.g. /home/abcd1234/...).
+#
+# Notes:
+#   - config.php is NOT in the repo, so deploys never touch your live keys.
+#   - This copies/overwrites; it does not delete files that were removed from
+#     the repo. To retire a page, also delete it in cPanel File Manager.
+
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/cpaneluser/public_html/
+    - /bin/mkdir -p "$DEPLOYPATH"
+    - /bin/cp -R public/. "$DEPLOYPATH"

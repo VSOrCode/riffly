@@ -1,0 +1,30 @@
+# --- Secrets: NEVER commit ---
+/public/api/config.php
+*.local.php
+.env
+.env.*
+
+# --- Server-installed dependencies (added on HostGator, not in the repo) ---
+/public/api/vendor/
+/public/api/stripe-php/
+/public/api/composer.json
+/public/api/composer.lock
+
+# --- Local dev only ---
+/dev/php.ini
+/dev/*.sqlite
+/dev/*.sqlite-journal
+/dev/*.sqlite-wal
+/dev/*.sqlite-shm
+
+# --- OS / editor cruft ---
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*~
+.idea/
+.vscode/
+
+# --- Logs ---
+*.log

@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Riffly — storage auction finds</title>
+  <meta name="description" content="One-of-a-kind finds pulled from abandoned storage unit auctions. Cleaned up, honestly graded, and priced to move. New items most weeks.">
+  <meta property="og:title" content="Riffly — storage auction finds">
+  <meta property="og:description" content="One-of-a-kind finds from storage unit auctions. Cleaned up and honestly graded.">
+  <meta property="og:type" content="website">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&display=swap">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23bd4b22'/%3E%3Ctext x='16' y='23' font-family='Georgia,serif' font-size='20' fill='white' text-anchor='middle'%3ER%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap site-header__inner">
+      <a class="brand" href="/index.html">Riffly<span class="brand__dot">.</span></a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="/index.html" aria-current="page">Shop</a>
+        <a href="#how">How it works</a>
+        <a href="/about.html">About</a>
+      </nav>
+      <div class="site-header__actions">
+        <a class="acct-link" href="/account.html" data-acct-label>Log in</a>
+        <button class="cart-btn" data-cart-open aria-haspopup="dialog">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 7h13l-1.4 9.5a2 2 0 0 1-2 1.7H9.4a2 2 0 0 1-2-1.7L6 7z"/><path d="M6 7 5 3H2"/><circle cx="9.5" cy="21" r="1"/><circle cx="17" cy="21" r="1"/></svg>
+          <span>Cart</span>
+          <span class="cart-btn__count" data-count="0">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="wrap">
+        <span class="hero__eyebrow">Storage auction finds</span>
+        <h1>Somebody&rsquo;s forgotten unit is your next great find.</h1>
+        <p>We buy abandoned storage lots at auction, pull out the good stuff, clean it up, and grade it honestly. One of each. When it&rsquo;s gone, it&rsquo;s gone.</p>
+        <div class="hero__actions">
+          <a class="btn btn--primary" href="#shop">Browse the finds</a>
+          <a class="btn btn--ghost" href="/about.html">How it works</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="trust" id="how">
+      <div class="wrap">
+        <div class="trust__grid">
+          <div class="trust__item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="12" cy="12" r="3.2"/></svg>
+            <span><strong>Photographed as-is</strong> No stock photos. You see the actual item.</span>
+          </div>
+          <div class="trust__item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+            <span><strong>Honestly graded</strong> Every flaw noted up front, before you buy.</span>
+          </div>
+          <div class="trust__item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <span><strong>Secure checkout</strong> Payments run through Stripe. We never see your card.</span>
+          </div>
+          <div class="trust__item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 7h11v10H3z"/><path d="M14 10h4l3 3v4h-7z"/><circle cx="7" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/></svg>
+            <span><strong>Ships in 2 days</strong> Or arrange local pickup in Mesa, AZ.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="shop">
+      <div class="wrap">
+        <div class="section__head">
+          <h2>In stock now</h2>
+          <p id="result-count">Loading&hellip;</p>
+        </div>
+
+        <div class="filters">
+          <div class="pills" id="pills" role="group" aria-label="Filter by category"></div>
+          <label class="filters__sort">Sort
+            <select class="select" id="sort">
+              <option value="newest">Recently added</option>
+              <option value="price-asc">Price: low to high</option>
+              <option value="price-desc">Price: high to low</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="grid" id="grid" aria-live="polite">
+          <p class="grid-empty">Loading the shelves&hellip;</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="site-footer__grid">
+        <div class="site-footer__brand">
+          <a class="brand" href="/index.html">Riffly<span class="brand__dot">.</span></a>
+          <p>One-of-a-kind finds from storage unit auctions, cleaned up and honestly graded.</p>
+        </div>
+        <div>
+          <h3>Shop</h3>
+          <a href="/index.html">All items</a>
+          <a href="/index.html?category=Tools">Tools</a>
+          <a href="/index.html?category=Electronics">Electronics</a>
+          <a href="/index.html?category=Furniture">Furniture</a>
+        </div>
+        <div>
+          <h3>Riffly</h3>
+          <a href="/about.html">About &amp; how it works</a>
+          <a href="/about.html#returns">Returns</a>
+          <a href="mailto:hello@riffly.com">hello@riffly.com</a>
+        </div>
+      </div>
+      <div class="site-footer__bar">
+        <span>&copy; <span id="year">2026</span> Riffly &middot; riffly.com</span>
+        <span>Secure checkout by Stripe</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/assets/js/store.js"></script>
+  <script src="/assets/js/index.js"></script>
+</body>
+</html>

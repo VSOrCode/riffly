@@ -1,0 +1,28 @@
+; Copy this file to  dev/php.ini  and set extension_dir to your PHP "ext" folder.
+; Used only when running:  php -c dev/php.ini -S 127.0.0.1:8001 -t public
+; Never deployed.
+;
+; winget PHP 8.4 on Windows installs its ext folder here (put your real username in):
+;   C:\Users\<you>\AppData\Local\Microsoft\WinGet\Packages\PHP.PHP.8.4_Microsoft.Winget.Source_8wekyb3d8bbwe\ext
+; Find it with:  php --ini   (then look next to the php.exe it reports)
+
+extension_dir = "C:\Users\CHANGEME\AppData\Local\Microsoft\WinGet\Packages\PHP.PHP.8.4_Microsoft.Winget.Source_8wekyb3d8bbwe\ext"
+
+extension=openssl
+extension=curl
+extension=mbstring
+extension=pdo_sqlite
+extension=sqlite3
+extension=pdo_mysql
+extension=mysqli
+extension=fileinfo
+
+error_reporting = E_ALL
+display_errors = On
+log_errors = On
+
+date.timezone = America/Phoenix
+
+session.cookie_httponly = 1
+session.cookie_samesite = "Lax"
+session.use_strict_mode = 1

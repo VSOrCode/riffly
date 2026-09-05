@@ -1,0 +1,46 @@
+# Riffly - Apache config for HostGator shared hosting
+
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # Force HTTPS (HostGator sits behind a proxy, so check the forwarded header too)
+  RewriteCond %{HTTPS} !=on
+  RewriteCond %{HTTP:X-Forwarded-Proto} !https
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # Pretty URLs: /item -> /item.html  (only when the .html file exists)
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME}\.html -f
+  RewriteRule ^([^./]+)/?$ $1.html [L]
+</IfModule>
+
+ErrorDocument 404 /404.html
+
+# Cache static assets
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css                "access plus 7 days"
+  ExpiresByType application/javascript  "access plus 7 days"
+  ExpiresByType image/svg+xml           "access plus 7 days"
+  ExpiresByType image/jpeg              "access plus 30 days"
+  ExpiresByType image/png               "access plus 30 days"
+  ExpiresByType image/webp              "access plus 30 days"
+  ExpiresByType application/json        "access plus 1 hour"
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+</IfModule>
+
+# Never serve docs or config templates that get copied up with a deploy
+<FilesMatch "\.(md|yml|yaml|lock)$">
+  Require all denied
+</FilesMatch>
+<FilesMatch "config(\.sample)?\.php$">
+  Require all denied
+</FilesMatch>

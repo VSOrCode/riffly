@@ -1,0 +1,16 @@
+# Riffly API folder - hardening
+
+Options -Indexes
+
+# Secrets and templates are never served over HTTP
+<FilesMatch "config(\.sample)?\.php$">
+  Require all denied
+</FilesMatch>
+
+# Composer / library metadata / docs
+<FilesMatch "\.(md|json|lock|dist|xml|neon|sql)$">
+  Require all denied
+</FilesMatch>
+
+# Internal library code and the vendored SDK are not directly reachable
+RedirectMatch 404 ^/api/(lib|vendor|stripe-php)/
