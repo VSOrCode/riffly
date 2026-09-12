@@ -113,6 +113,7 @@
           '<label class="field"><span>Password</span>' +
             '<input name="password" type="password" autocomplete="new-password" minlength="8" required>' +
             '<small class="field__hint">At least 8 characters.</small></label>' +
+          (auth.recaptchaSiteKey ? '<div class="field recaptcha-field" id="recaptcha-slot"></div>' : "") +
           '<div class="form-note form-note--error" data-form-error hidden></div>' +
           '<button class="btn btn--primary btn--block" type="submit">Create account</button>' +
         "</form>" +
@@ -131,6 +132,7 @@
     select(wantSignup ? "signup" : "login");
 
     wireUsernameCheck(signupForm.querySelector('[name="username"]'), signupForm.querySelector("[data-uname-hint]"));
+    if (auth.recaptchaSiteKey) wireRecaptcha(auth.recaptchaSiteKey);
 
     loginForm.addEventListener("submit", function (e) {
       e.preventDefault();
@@ -141,15 +143,20 @@
     });
     signupForm.addEventListener("submit", function (e) {
       e.preventDefault();
+      if (auth.recaptchaSiteKey && !recaptchaToken()) {
+        showFormError(signupForm, "Please complete the reCAPTCHA check.");
+        return;
+      }
       submit(signupForm, "/api/auth/signup.php", "Create account", {
         username: signupForm.username.value.trim(),
         email: signupForm.email.value.trim(),
-        password: signupForm.password.value
-      });
+        password: signupForm.password.value,
+        recaptchaToken: recaptchaToken()
+      }, true);
     });
   }
 
-  function submit(form, url, label, body) {
+  function submit(form, url, label, body, isSignup) {
     var btn = form.querySelector("button[type=submit]");
     hideFormError(form);
     setBusy(btn, "One moment…");
@@ -162,10 +169,55 @@
       }
       unBusy(btn, label);
       showFormError(form, (res.data && res.data.error) || "Something went wrong. Please try again.");
+      if (isSignup) resetRecaptcha();
     }).catch(function () {
       unBusy(btn, label);
       showFormError(form, "Could not reach the server. Please try again.");
+      if (isSignup) resetRecaptcha();
     });
+  }
+
+  /* ---------------- reCAPTCHA (v2 checkbox / invisible) ---------------- */
+  var recaptchaWidgetId = null;
+
+  function loadRecaptchaScript(cb) {
+    if (window.grecaptcha && window.grecaptcha.render) { window.grecaptcha.ready(cb); return; }
+    var existing = document.getElementById("recaptcha-api-script");
+    if (existing) {
+      var iv = setInterval(function () {
+        if (window.grecaptcha && window.grecaptcha.ready) { clearInterval(iv); window.grecaptcha.ready(cb); }
+      }, 100);
+      return;
+    }
+    var s = document.createElement("script");
+    s.id = "recaptcha-api-script";
+    s.src = "https://www.google.com/recaptcha/api.js";
+    s.async = true;
+    s.defer = true;
+    s.addEventListener("load", function () {
+      if (window.grecaptcha && window.grecaptcha.ready) window.grecaptcha.ready(cb);
+      else cb();
+    }, { once: true });
+    document.head.appendChild(s);
+  }
+
+  function wireRecaptcha(siteKey) {
+    var slot = document.getElementById("recaptcha-slot");
+    if (!slot) return;
+    loadRecaptchaScript(function () {
+      try {
+        recaptchaWidgetId = window.grecaptcha.render(slot, { sitekey: siteKey });
+      } catch (e) {
+        slot.innerHTML = '<p class="form-note form-note--info">Could not load the human-check widget. Refresh the page to try again.</p>';
+      }
+    });
+  }
+  function recaptchaToken() {
+    try { return (window.grecaptcha && recaptchaWidgetId !== null) ? window.grecaptcha.getResponse(recaptchaWidgetId) : ""; }
+    catch (e) { return ""; }
+  }
+  function resetRecaptcha() {
+    try { if (window.grecaptcha && recaptchaWidgetId !== null) window.grecaptcha.reset(recaptchaWidgetId); } catch (e) {}
   }
 
   /* ---------------- live username check ---------------- */

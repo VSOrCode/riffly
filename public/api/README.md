@@ -33,9 +33,15 @@ api/
    `app_secret`, the `db` block, and `stripe_secret_key`.
 4. **Stripe library** — `composer require stripe/stripe-php` in this folder,
    or upload a release build to `api/stripe-php/`.
-5. **Google (optional)** — add `google.client_id` / `client_secret` to
+5. **Google sign-in (optional)** — add `google.client_id` / `client_secret` to
    `config.php`. Redirect URI in Google Console:
    `https://riffly.com/api/auth/google-callback.php`.
+6. **reCAPTCHA on signup (optional)** — add `recaptcha.site_key` /
+   `secret_key` to `config.php`. The site key is domain-locked: go to
+   google.com/recaptcha/admin → your site → Settings → **Domains**, and make
+   sure `riffly.com` (and `www.riffly.com` if you use it) is listed, or the
+   checkbox will show "domain not supported" instead of working. Add
+   `localhost` and `127.0.0.1` there too if you want it to render locally.
 
 Full walkthrough: `docs/deploy-hostgator.md`.
 

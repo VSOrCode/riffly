@@ -68,6 +68,7 @@
         user: d.user || null,
         csrf: d.csrf || "",
         googleEnabled: !!d.googleEnabled,
+        recaptchaSiteKey: d.recaptchaSiteKey || null,
         loaded: true
       };
       renderAccount();

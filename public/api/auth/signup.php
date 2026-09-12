@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../lib/auth.php';
+require_once __DIR__ . '/../lib/recaptcha.php';
 
 require_post();
 require_csrf();
@@ -8,6 +9,10 @@ $b = read_json_body();
 $username = trim((string) ($b['username'] ?? ''));
 $email    = trim((string) ($b['email'] ?? ''));
 $password = (string) ($b['password'] ?? '');
+
+if (recaptcha_enabled() && !verify_recaptcha((string) ($b['recaptchaToken'] ?? ''))) {
+    json_err('Please complete the reCAPTCHA check and try again.', 400, 'recaptcha_failed');
+}
 
 if (!username_valid($username)) {
     json_err('Usernames are 3-20 letters, numbers, or underscores.', 422, 'username_invalid');

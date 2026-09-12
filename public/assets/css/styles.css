@@ -432,6 +432,9 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 550; line-height: 1.15; let
 .field__hint--ok { color: var(--pine); }
 .field__hint--bad { color: var(--brand-2); }
 
+.recaptcha-field { overflow-x: auto; }
+.recaptcha-field > div { transform-origin: left top; }
+
 .form-note { font-size: .85rem; padding: .6rem .75rem; border-radius: var(--radius-sm); margin-bottom: 1rem; }
 .form-note--error { background: #fbeae4; color: var(--brand-2); }
 .form-note--info { background: var(--amber-soft); color: var(--amber); }

@@ -11,6 +11,7 @@ The site now has three server-side pieces, all on HostGator's PHP + MySQL:
 | **Accounts / login** | a MySQL database + `config.php` |
 | Stripe checkout | the Stripe PHP library + keys in `config.php` |
 | "Continue with Google" (optional) | a Google OAuth client in `config.php` |
+| reCAPTCHA on signup (optional) | site/secret keys in `config.php`, with `riffly.com` on the key's allowed-domains list |
 
 ---
 
@@ -86,8 +87,17 @@ return array(
   'ship_to'           => array('US'),
 
   'google' => array('client_id' => '', 'client_secret' => ''),  // fill in Step 8, or leave empty
+
+  'recaptcha' => array(
+    'site_key'   => 'your reCAPTCHA site key',
+    'secret_key' => 'your reCAPTCHA secret key',
+  ),
 );
 ```
+
+Make sure `riffly.com` is on the key's allowed-domains list at
+google.com/recaptcha/admin → your site → Settings, or the checkbox shows a
+"domain not supported" error instead of the human-check.
 
 `config.php` is git-ignored, so deploys never overwrite it.
 

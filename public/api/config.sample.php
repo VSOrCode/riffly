@@ -46,6 +46,17 @@ return array(
         'client_secret' => '',
     ),
 
+    /* ---- reCAPTCHA on signup (optional) ------------------------------------
+     * https://www.google.com/recaptcha/admin -> your site -> Settings.
+     * Leave site_key empty to skip showing/requiring it.
+     */
+    'recaptcha' => array(
+        'site_key'   => '',
+        'secret_key' => '',
+        // Only used if this turns out to be a v3 (score-based) key:
+        // 'min_score' => 0.3,
+    ),
+
     /* ---- Shipping ---------------------------------------------------------- */
     // Default: charge the per-item shipping from products.json, summed.
     // 'flat_shipping_amount' => 900,          // cents, one rate for any order
