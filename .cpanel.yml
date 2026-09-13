@@ -3,19 +3,22 @@
 # Runs automatically when you click "Update from Remote" then "Deploy HEAD Commit"
 # in cPanel, or on push if you configure a deploy hook.
 #
-# It copies the contents of public/ into public_html/.
+# It copies the contents of public/ into riffly.com's actual document root.
 #
-# >>> EDIT the DEPLOYPATH below: replace  cpaneluser  with your real cPanel
-#     username. You can see it in cPanel top-right, or in the path shown on the
-#     Git Version Control page (e.g. /home/abcd1234/...).
+# riffly.com is an ADDON domain on cPanel user fqxyeite, NOT the account's main
+# domain - its document root is public_html/website_9ded5fb2 (confirmed in
+# cPanel -> Domains), not plain public_html/. Deploying to the wrong path would
+# silently update the account's main domain (fqx.yei.temporary.site) instead.
 #
 # Notes:
 #   - config.php is NOT in the repo, so deploys never touch your live keys.
 #   - This copies/overwrites; it does not delete files that were removed from
 #     the repo. To retire a page, also delete it in cPanel File Manager.
+#   - If riffly.com's document root ever changes (cPanel -> Domains -> Manage),
+#     update DEPLOYPATH below to match.
 
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/cpaneluser/public_html/
+    - export DEPLOYPATH=/home1/fqxyeite/public_html/website_9ded5fb2/
     - /bin/mkdir -p "$DEPLOYPATH"
     - /bin/cp -R public/. "$DEPLOYPATH"

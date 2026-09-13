@@ -30,22 +30,36 @@ git push -u origin main
 
 Create the empty `riffly` repo on github.com first (no README).
 
-## Step 2 — Set the deploy path
+## Step 2 — Deploy path (already set for this account)
 
-Edit `.cpanel.yml`, replace `cpaneluser` with your cPanel username (and adjust
-the folder if riffly.com is an addon domain — check cPanel → Domains). Commit + push.
+`.cpanel.yml` already points at the confirmed path for this account:
+
+```
+DEPLOYPATH=/home1/fqxyeite/public_html/website_9ded5fb2/
+```
+
+That's riffly.com's real document root — confirmed in cPanel → **Domains**,
+because riffly.com is an **addon domain** here, not the account's main domain
+(`fqx.yei.temporary.site`, which owns plain `public_html/`). If you ever see
+cPanel → Domains list a different Document Root for riffly.com (e.g. after
+recreating the domain), update `DEPLOYPATH` in `.cpanel.yml` to match, commit,
+and push.
 
 ## Step 3 — Get the files onto HostGator
 
 **Option A — cPanel Git Version Control (preferred)**
 
-1. cPanel → **Git Version Control** → **Create**.
-2. Clone URL: `https://github.com/YOURNAME/riffly.git` (private repo: use
-   `https://YOURNAME:TOKEN@github.com/...` with a
-   [personal access token](https://github.com/settings/tokens)).
-3. Repository Path: `/home/YOURUSER/repositories/riffly`.
+1. cPanel → **Git™ Version Control** → **Create**.
+2. Clone URL: `https://github.com/VSOrCode/riffly.git` — this is a **private**
+   repo, so use a URL with a
+   [personal access token](https://github.com/settings/tokens) (fine-grained,
+   read-only, scoped to just this repo):
+   `https://VSOrCode:TOKEN@github.com/VSOrCode/riffly.git`
+3. Repository Path: `/home1/fqxyeite/repositories/riffly` (outside
+   `public_html`, so the raw repo — including `.git`) is never web-accessible.
 4. After it clones: **Manage** → **Pull or Deploy** → **Update from Remote**,
-   then **Deploy HEAD Commit**. `.cpanel.yml` copies `public/` into your web root.
+   then **Deploy HEAD Commit**. `.cpanel.yml` copies `public/` into
+   `public_html/website_9ded5fb2/`.
 
 Every later update: `git push`, then **Update from Remote** → **Deploy HEAD Commit**.
 
