@@ -14,15 +14,3 @@ Options -Indexes
 
 # Internal library code and the vendored SDK are not directly reachable
 RedirectMatch 404 ^/api/(lib|vendor|stripe-php)/
-
-# Google's OAuth code/state values (long, contain / and +) trip some hosts'
-# default ModSecurity rules as a false positive. Scoped off for just this
-# one endpoint, which already does its own strict verification either way.
-<FilesMatch "^google-callback\.php$">
-  <IfModule mod_security2.c>
-    SecRuleEngine Off
-  </IfModule>
-  <IfModule mod_security.c>
-    SecFilterEngine Off
-  </IfModule>
-</FilesMatch>
