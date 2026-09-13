@@ -13,10 +13,13 @@
  */
 
 require_once __DIR__ . '/lib/auth.php';
+require_once __DIR__ . '/lib/subscriptions.php';
 
 require_post();
 require_csrf();
 $user = require_user();
+$perks = user_perks((int) $user['id']);
+$discountPercent = $perks ? $perks['discountPercent'] : 0;
 
 $secret  = (string) (config()['stripe_secret_key'] ?? '');
 $siteUrl = rtrim((string) (config()['site_url'] ?? ''), '/');
@@ -95,11 +98,16 @@ foreach ($ids as $id) {
         }
     }
 
+    $unitAmount = (int) $p['price'];
+    if ($discountPercent > 0) {
+        $unitAmount = (int) round($unitAmount * (100 - $discountPercent) / 100);
+    }
+
     $lineItems[] = array(
         'quantity'   => 1,
         'price_data' => array(
             'currency'     => $currency,
-            'unit_amount'  => (int) $p['price'],
+            'unit_amount'  => $unitAmount,
             'product_data' => $productData,
         ),
     );
@@ -112,6 +120,9 @@ foreach ($ids as $id) {
 
 if (array_key_exists('flat_shipping_amount', config()) && config()['flat_shipping_amount'] !== null) {
     $shippingCents = (int) config()['flat_shipping_amount'];
+}
+if ($perks && !empty($perks['freeShipping'])) {
+    $shippingCents = 0;
 }
 
 /* ------------------------------------------------------- create session ---- */

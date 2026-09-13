@@ -42,12 +42,19 @@
       return;
     }
 
-    var subtotal = 0, shipping = 0, anyShip = false, anyPickup = false;
+    var plan = Riffly.auth.plan;
+    var discountPct = plan ? plan.discountPercent : 0;
+    var freeShipping = !!(plan && plan.freeShipping);
+
+    var rawSubtotal = 0, subtotal = 0, shipping = 0, anyShip = false, anyPickup = false;
     items.forEach(function (p) {
-      subtotal += Number(p.price) || 0;
+      var price = Number(p.price) || 0;
+      rawSubtotal += price;
+      subtotal += discountPct > 0 ? Math.round(price * (100 - discountPct) / 100) : price;
       if (p.pickupOnly) anyPickup = true;
-      else { anyShip = true; shipping += Number(p.shipping) || 0; }
+      else { anyShip = true; shipping += freeShipping ? 0 : (Number(p.shipping) || 0); }
     });
+    var savings = rawSubtotal - subtotal;
 
     root.innerHTML =
       '<div class="wrap checkout">' +
@@ -61,9 +68,11 @@
           "</div>" +
 
           '<aside class="checkout__summary">' +
-            '<div class="sum-row"><span>Subtotal</span><span>' + Riffly.money(subtotal) + "</span></div>" +
+            (plan ? '<div class="sum-row sum-row--muted"><span>' + E(plan.planName) + " member</span><span></span></div>" : "") +
+            '<div class="sum-row"><span>Subtotal</span><span>' + Riffly.money(rawSubtotal) + "</span></div>" +
+            (savings > 0 ? '<div class="sum-row" style="color:var(--pine)"><span>Member discount (' + discountPct + '%)</span><span>&minus;' + Riffly.money(savings) + "</span></div>" : "") +
             (anyShip
-              ? '<div class="sum-row"><span>Shipping</span><span>' + (shipping > 0 ? Riffly.money(shipping) : "Calculated at checkout") + "</span></div>"
+              ? '<div class="sum-row"><span>Shipping</span><span>' + (freeShipping ? "Free" : (shipping > 0 ? Riffly.money(shipping) : "Calculated at checkout")) + "</span></div>"
               : "") +
             (anyPickup ? '<div class="sum-row sum-row--muted"><span>Local pickup items</span><span>Free</span></div>' : "") +
             '<div class="sum-row sum-row--total"><span>Estimated total</span><span>' + Riffly.money(subtotal + shipping) + "</span></div>" +

@@ -69,6 +69,7 @@
         csrf: d.csrf || "",
         googleEnabled: !!d.googleEnabled,
         recaptchaSiteKey: d.recaptchaSiteKey || null,
+        plan: d.plan || null,
         loaded: true
       };
       renderAccount();
@@ -100,16 +101,27 @@
       var id = next.slice(4).replace(/[^A-Za-z0-9_-]/g, "");
       return id ? "/checkout.html?buy=" + encodeURIComponent(id) : "/checkout.html";
     }
+    if (next && next.indexOf("subscribe:") === 0) {
+      var bits = next.slice(10).split(":");
+      var plan = (bits[0] || "").replace(/[^a-z]/g, "");
+      var interval = bits[1] === "year" ? "year" : "month";
+      return plan ? "/pricing.html?plan=" + encodeURIComponent(plan) + "&interval=" + interval + "&auto=1" : "/pricing.html";
+    }
     return "/index.html";
   }
   Riffly.resumeUrl = resumeUrl;
 
   function renderAccount() {
     var u = Riffly.auth.user;
+    var plan = Riffly.auth.plan;
     document.querySelectorAll("[data-acct-label]").forEach(function (el) {
       el.textContent = u ? u.username : "Log in";
       el.setAttribute("href", u ? "/account.html" : "/signin.html");
       el.classList.toggle("is-authed", !!u);
+    });
+    document.querySelectorAll("[data-plan-badge]").forEach(function (el) {
+      if (plan) { el.textContent = plan.planName; el.hidden = false; }
+      else { el.textContent = ""; el.hidden = true; }
     });
   }
 

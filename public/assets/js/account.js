@@ -21,16 +21,46 @@
 
   function renderSignedIn(auth) {
     var u = auth.user;
+    var plan = auth.plan;
+    var justSubscribed = params.get("sub") === "success";
     document.title = "Your account — Riffly";
     root.innerHTML =
       '<div class="auth-card">' +
         "<h1>You&rsquo;re signed in</h1>" +
         '<p class="auth-sub">Signed in as <strong>' + E(u.username) + "</strong> &middot; " + E(u.email) + "</p>" +
+        (justSubscribed ? '<div class="form-note form-note--info">Subscription started &mdash; welcome aboard!</div>' : "") +
+        '<div class="account-plan">' +
+          (plan
+            ? '<div class="account-plan__row"><span class="plan-badge">' + E(plan.planName) + '</span>' +
+                '<span class="account-plan__meta">' + (plan.cancelAtPeriodEnd ? "Cancels" : "Renews") +
+                (plan.currentPeriodEnd ? " " + E(formatDate(plan.currentPeriodEnd)) : "") + "</span></div>" +
+              '<button class="btn btn--ghost btn--block" data-manage-plan>Manage subscription</button>'
+            : '<p class="auth-sub" style="margin-bottom:.75rem">Not subscribed yet. Riffly Plus and Pro members get a standing discount and free shipping on every order.</p>' +
+              '<a class="btn btn--ghost btn--block" href="/pricing.html">View plans</a>') +
+        "</div>" +
         (next
-          ? '<a class="btn btn--primary btn--block" href="' + E(continueTarget()) + '">Continue to checkout</a>'
-          : '<a class="btn btn--primary btn--block" href="/index.html">Continue shopping</a>') +
+          ? '<a class="btn btn--primary btn--block" href="' + E(continueTarget()) + '" style="margin-top:.75rem">Continue to checkout</a>'
+          : '<a class="btn btn--primary btn--block" href="/index.html" style="margin-top:.75rem">Continue shopping</a>') +
         '<button class="btn btn--ghost btn--block" data-logout style="margin-top:.6rem">Sign out</button>' +
       "</div>";
+
+    var manageBtn = root.querySelector("[data-manage-plan]");
+    if (manageBtn) {
+      manageBtn.addEventListener("click", function () {
+        manageBtn.setAttribute("aria-disabled", "true");
+        Riffly.api("/api/billing/portal.php", { method: "POST" }).then(function (res) {
+          if (res.data && res.data.url) { window.location.href = res.data.url; return; }
+          manageBtn.removeAttribute("aria-disabled");
+          alert((res.data && res.data.error) || "Could not open the billing portal.");
+        });
+      });
+    }
+  }
+
+  function formatDate(sqlDate) {
+    var d = new Date(String(sqlDate).replace(" ", "T") + "Z");
+    if (isNaN(d.getTime())) return "";
+    return d.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
   }
 
   function renderChooseUsername() {

@@ -35,6 +35,49 @@ return array(
     'stripe_secret_key' => 'sk_test_REPLACE_WITH_YOUR_KEY',
     // 'stripe_api_version' => '2024-06-20',
 
+    /* ---- Subscriptions (optional) -------------------------------------------
+     * For each plan, create a Product in Stripe with a monthly Price and a
+     * yearly Price, then paste the two Price ids (price_...) below.
+     * dashboard.stripe.com -> Product catalog -> + Add product.
+     * Leave a price_ids entry as REPLACE_ME to keep that plan/interval
+     * disabled (its Subscribe button will show a "not configured" message).
+     */
+    'plans' => array(
+        'basic' => array(
+            'name' => 'Basic',
+            'price_ids' => array(
+                'month' => 'price_REPLACE_ME_BASIC_MONTHLY',
+                'year'  => 'price_REPLACE_ME_BASIC_YEARLY',
+            ),
+            'shipping_free'    => true,
+            'discount_percent' => 0,
+        ),
+        'plus' => array(
+            'name' => 'Plus',
+            'price_ids' => array(
+                'month' => 'price_REPLACE_ME_PLUS_MONTHLY',
+                'year'  => 'price_REPLACE_ME_PLUS_YEARLY',
+            ),
+            'shipping_free'    => true,
+            'discount_percent' => 10,
+        ),
+        'pro' => array(
+            'name' => 'Pro',
+            'price_ids' => array(
+                'month' => 'price_REPLACE_ME_PRO_MONTHLY',
+                'year'  => 'price_REPLACE_ME_PRO_YEARLY',
+            ),
+            'shipping_free'    => true,
+            'discount_percent' => 20,
+        ),
+    ),
+
+    // dashboard.stripe.com -> Developers -> Webhooks -> Add endpoint:
+    //   https://riffly.com/api/billing/webhook.php
+    // Events to send: customer.subscription.created, .updated, .deleted
+    // Then paste the endpoint's "Signing secret" (whsec_...) here.
+    'stripe_webhook_secret' => 'whsec_REPLACE_WITH_YOUR_SIGNING_SECRET',
+
     /* ---- Google Sign-In (optional) -----------------------------------------
      * console.cloud.google.com -> APIs & Services -> Credentials ->
      * OAuth client ID (type: Web application).

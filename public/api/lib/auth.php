@@ -68,6 +68,14 @@ function require_user(): array
     return $u;
 }
 
+function find_user_by_id(int $id): ?array
+{
+    $st = db()->prepare('SELECT * FROM users WHERE id = ? LIMIT 1');
+    $st->execute(array($id));
+    $row = $st->fetch();
+    return $row ?: null;
+}
+
 /* ----------------------------------------------------- username / email ---- */
 
 function normalize_username(string $s): string

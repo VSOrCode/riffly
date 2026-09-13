@@ -113,6 +113,14 @@ function resume_url(string $next): string
         $id = preg_replace('/[^A-Za-z0-9_-]/', '', substr($next, 4));
         return $id !== '' ? '/checkout.html?buy=' . rawurlencode($id) : '/checkout.html';
     }
+    if (strncmp($next, 'subscribe:', 10) === 0) {
+        $bits = explode(':', substr($next, 10), 2);
+        $plan = preg_replace('/[^a-z]/', '', strtolower($bits[0] ?? ''));
+        $interval = (isset($bits[1]) && $bits[1] === 'year') ? 'year' : 'month';
+        return $plan !== ''
+            ? '/pricing.html?plan=' . rawurlencode($plan) . '&interval=' . $interval . '&auto=1'
+            : '/pricing.html';
+    }
     return '/account.html';
 }
 
