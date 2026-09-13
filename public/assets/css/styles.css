@@ -373,6 +373,12 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 550; line-height: 1.15; let
 .site-footer__brand p { font-size: .85rem; color: var(--ink-3); margin-top: .5rem; max-width: 32ch; }
 .site-footer__bar { border-top: 1px solid var(--line); padding-block: 1.25rem; display: flex; justify-content: space-between; flex-wrap: wrap; gap: .5rem; font-size: .8rem; color: var(--ink-3); }
 
+/* ---------- Header legal links ---------- */
+.legal-links { display: flex; align-items: center; gap: .9rem; font-size: .78rem; }
+.legal-links a { color: var(--ink-3); text-decoration: none; }
+.legal-links a:hover { color: var(--ink); }
+@media (max-width: 760px) { .legal-links { display: none; } }
+
 /* ---------- Header account + actions ---------- */
 .site-header__actions { display: flex; align-items: center; gap: .6rem; margin-left: auto; }
 .site-nav + .site-header__actions { margin-left: auto; }
