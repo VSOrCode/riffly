@@ -11,7 +11,7 @@
       var auth = r[0];
       if (!auth.user) {
         var next = buyId ? "buy:" + buyId : "checkout";
-        window.location.replace("/account.html?next=" + encodeURIComponent(next));
+        window.location.replace("/signin.html?next=" + encodeURIComponent(next));
         return;
       }
       if (!Riffly.catalog) return fail("We couldn't load the catalog. Please refresh.");
@@ -113,7 +113,7 @@
       btn.innerHTML = label;
 
       var d = res.data || {};
-      if (d.code === "auth_required") { window.location.href = "/account.html?next=" + encodeURIComponent(buyId ? "buy:" + buyId : "checkout"); return; }
+      if (d.code === "auth_required") { window.location.href = "/signin.html?next=" + encodeURIComponent(buyId ? "buy:" + buyId : "checkout"); return; }
       if (d.code === "not_configured") {
         showErr(errEl, "Payments aren’t switched on yet — this is a demo build. Everything up to the payment step works. Once the Stripe keys are added on the server, this button goes straight to Stripe.");
         return;

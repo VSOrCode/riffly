@@ -9,7 +9,7 @@ start_session();
 /** Redirect back to the account page with an error message. */
 function oauth_bail(string $msg): void
 {
-    header('Location: /account.html?error=' . rawurlencode($msg));
+    header('Location: /signin.html?error=' . rawurlencode($msg));
     exit;
 }
 

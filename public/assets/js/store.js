@@ -108,20 +108,20 @@
     var u = Riffly.auth.user;
     document.querySelectorAll("[data-acct-label]").forEach(function (el) {
       el.textContent = u ? u.username : "Log in";
-      el.setAttribute("href", "/account.html");
+      el.setAttribute("href", u ? "/account.html" : "/signin.html");
       el.classList.toggle("is-authed", !!u);
     });
   }
 
   /* ---------------- checkout entry points ---------------- */
   Riffly.goToCheckout = function () {
-    window.location.href = Riffly.auth.user ? "/checkout.html" : "/account.html?next=checkout";
+    window.location.href = Riffly.auth.user ? "/checkout.html" : "/signin.html?next=checkout";
   };
   Riffly.buyNow = function (id) {
     id = String(id);
     window.location.href = Riffly.auth.user
       ? "/checkout.html?buy=" + encodeURIComponent(id)
-      : "/account.html?next=buy:" + encodeURIComponent(id);
+      : "/signin.html?next=buy:" + encodeURIComponent(id);
   };
 
   /* ---------------- catalog ---------------- */
