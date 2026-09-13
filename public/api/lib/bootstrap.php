@@ -115,3 +115,47 @@ function resume_url(string $next): string
     }
     return '/account.html';
 }
+
+/**
+ * Stateless, signed OAuth "state" token - no session needed to issue or
+ * verify it. (Deliberately session-independent: response_mode=form_post
+ * makes Google POST back as a cross-site top-level navigation, and a
+ * SameSite=Lax session cookie is not sent on those, so we can't rely on
+ * a server-side session to check state.)
+ */
+function oauth_state_issue(string $next): string
+{
+    $nonce = bin2hex(random_bytes(12));
+    $ts = (string) time();
+    $payload = $nonce . '|' . $ts . '|' . $next;
+    $encoded = rtrim(strtr(base64_encode($payload), '+/', '-_'), '=');
+    $sig = hash_hmac('sha256', $encoded, (string) (config()['app_secret'] ?? ''));
+    return $encoded . '.' . $sig;
+}
+
+/** Returns the embedded "next" string on success, or null if invalid/expired/tampered. */
+function oauth_state_verify(string $state, int $maxAgeSeconds = 600): ?string
+{
+    $parts = explode('.', $state, 2);
+    if (count($parts) !== 2) {
+        return null;
+    }
+    list($encoded, $sig) = $parts;
+    $expected = hash_hmac('sha256', $encoded, (string) (config()['app_secret'] ?? ''));
+    if (!hash_equals($expected, $sig)) {
+        return null;
+    }
+    $payload = base64_decode(strtr($encoded, '-_', '+/'));
+    if ($payload === false) {
+        return null;
+    }
+    $bits = explode('|', $payload, 3);
+    if (count($bits) !== 3) {
+        return null;
+    }
+    list(, $ts, $next) = $bits;
+    if (!ctype_digit($ts) || (time() - (int) $ts) > $maxAgeSeconds) {
+        return null;
+    }
+    return $next;
+}

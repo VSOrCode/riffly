@@ -4,9 +4,8 @@ require_once __DIR__ . '/../lib/http.php';
 
 $g    = config()['google'] ?? array();
 $site = rtrim((string) config()['site_url'], '/');
-start_session();
 
-/** Redirect back to the account page with an error message. */
+/** Redirect back to the sign-in page with an error message. */
 function oauth_bail(string $msg): void
 {
     header('Location: /signin.html?error=' . rawurlencode($msg));
@@ -16,19 +15,25 @@ function oauth_bail(string $msg): void
 if (empty($g['client_id']) || empty($g['client_secret'])) {
     oauth_bail('Google sign-in is not configured.');
 }
-if (isset($_GET['error'])) {
+
+// Google POSTs back here (response_mode=form_post); accept GET too in case
+// a proxy strips the method or this is hit manually during setup.
+$src = (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') ? $_POST : $_GET;
+
+if (isset($src['error'])) {
     oauth_bail('Google sign-in was canceled.');
 }
 
-$code  = (string) ($_GET['code'] ?? '');
-$state = (string) ($_GET['state'] ?? '');
+$code  = (string) ($src['code'] ?? '');
+$state = (string) ($src['state'] ?? '');
 
-if ($code === '' || $state === '' || !hash_equals((string) ($_SESSION['oauth_state'] ?? ''), $state)) {
+if ($code === '' || $state === '') {
     oauth_bail('Google sign-in could not be verified. Please try again.');
 }
-unset($_SESSION['oauth_state']);
-$next = (string) ($_SESSION['oauth_next'] ?? '');
-unset($_SESSION['oauth_next']);
+$next = oauth_state_verify($state);
+if ($next === null) {
+    oauth_bail('Google sign-in could not be verified. Please try again.');
+}
 
 $redirect = $site . '/api/auth/google-callback.php';
 
